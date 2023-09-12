@@ -1,0 +1,15 @@
+<mat-card>
+    <mat-card-content>
+        <img src="assets/images/SK Logo Transparent.png"
+            style="display: block; margin-left: auto; margin-right: auto; max-width: 30%;" />
+        <mat-card-header class="app-accent" layout="row">
+            <mat-card-title>
+                <span class="mat-headline">{{ msg }}</span>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-list flex>
+            <app-vendor-list [vendors]="vendors">
+            </app-vendor-list>
+        </mat-list>
+    </mat-card-content>
+</mat-card>
