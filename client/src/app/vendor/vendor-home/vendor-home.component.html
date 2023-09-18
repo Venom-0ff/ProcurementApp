@@ -1,5 +1,5 @@
-<mat-card>
-    <mat-card-content>
+<mat-card *ngIf="hideEditForm">
+    <mat-card-content *ngIf="vendors$ | async as vndrs; else loading;">
         <img src="assets/images/SK Logo Transparent.png"
             style="display: block; margin-left: auto; margin-right: auto; max-width: 30%;" />
         <mat-card-header class="app-accent" layout="row">
@@ -8,8 +8,22 @@
             </mat-card-title>
         </mat-card-header>
         <mat-list flex>
-            <app-vendor-list [vendors]="vendors">
+            <app-vendor-list [vendors]="vndrs" (selected)="select($event)">
             </app-vendor-list>
         </mat-list>
+    </mat-card-content>
+    <ng-template #loading class="my-primary-text">Loading Vendors from server...</ng-template>
+</mat-card>
+<mat-card *ngIf="!hideEditForm">
+    <img src="assets/images/SK Logo Transparent.png"
+        style="display: block; margin-left: auto; margin-right: auto; max-width: 30%;" />
+    <mat-card-header class="app-accent" layout="row">
+        <mat-card-title>
+            <span class="mat-headline">{{ msg }}</span>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <app-vendor-detail [selectedVendor]="vendor" (cancelled)="cancel('cancelled')" (saved)="update($event)">
+        </app-vendor-detail>
     </mat-card-content>
 </mat-card>
