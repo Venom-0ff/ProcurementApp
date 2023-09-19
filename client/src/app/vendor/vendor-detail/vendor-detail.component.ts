@@ -26,6 +26,7 @@ export class VendorDetailComponent implements OnInit {
 
   @Input() vendors: Vendor[] | null = null;
   @Output() cancelled = new EventEmitter();
+  @Output() deleted = new EventEmitter();
   @Output() saved = new EventEmitter();
   vendorForm: FormGroup;
   name: FormControl;

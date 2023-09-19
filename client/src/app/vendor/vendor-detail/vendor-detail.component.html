@@ -48,13 +48,17 @@
         <mat-form-field>
             <mat-select matInput placeholder="Vendor Rating Type" formControlName="type" flex>
                 <mat-option value="Trusted">Trusted</mat-option>
-                <mat-option value="Unrusted">Unrusted</mat-option>
+                <mat-option value="Unrusted">Untrusted</mat-option>
             </mat-select>
         </mat-form-field>
     </div>
     <div class="mat-pad-sm">
         <span>
             <button mat-raised-button type="submit">Save</button>
+        </span>
+        <span>
+            <button *ngIf="selectedVendor.id" mat-raised-button type="button"
+                (click)="deleted.emit(selectedVendor)">Delete</button>
         </span>
         <span>
             <button mat-raised-button type="button" (click)="cancelled.emit(selectedVendor)">

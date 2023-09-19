@@ -3,9 +3,9 @@ describe('vendor update test', () => {
         cy.visit('/');
         cy.get('button').click();
         cy.contains('a', 'vendors').click();
-        cy.contains('SK Depot').click();
+        cy.contains('ABC').click();
         cy.get("[type='email']").clear();
-        cy.get("[type='email']").type('s_kostyukov@fanshaweonline.ca');
+        cy.get("[type='email']").type('sales@abc.com');
         cy.get('form').submit();
         cy.contains('updated!');
     });
