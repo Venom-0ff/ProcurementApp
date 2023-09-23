@@ -6,7 +6,7 @@ describe('vendor update test', () => {
         cy.contains('ABC').click();
         cy.get("[type='email']").clear();
         cy.get("[type='email']").type('sales@abc.com');
-        cy.get('form').submit();
+        cy.get('button').contains('Save').click();
         cy.contains('updated!');
     });
 });

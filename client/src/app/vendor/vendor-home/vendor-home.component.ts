@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Vendor } from '../vendor';
-import { VendorService } from '../vendor.service';
+import { NewVendorService } from '../newvendor.service';
 
 @Component({
   templateUrl: 'vendor-home.component.html',
@@ -10,12 +10,12 @@ import { VendorService } from '../vendor.service';
 
 export class VendorHomeComponent implements OnInit {
   msg: string;
-  vendors$?: Observable<Vendor[]>;
   vendor: Vendor;
+  vendors: Vendor[] = [];
   hideEditForm: boolean;
   todo: string;
 
-  constructor(public vendorService: VendorService) {
+  constructor(public newvendorService: NewVendorService) {
     this.vendor = {
       id: 0,
       name: '',
@@ -33,10 +33,9 @@ export class VendorHomeComponent implements OnInit {
   } // constructor
 
   ngOnInit(): void {
-    (this.vendors$ = this.vendorService.get()),
-      catchError((err) => (this.msg = err.message));
+    this.getAll();
   } // ngOnInit
-
+  
   select(vendor: Vendor): void {
     this.todo = 'update';
     this.vendor = vendor;
@@ -56,13 +55,31 @@ export class VendorHomeComponent implements OnInit {
   * update - send changed update to service
   */
   update(vendor: Vendor): void {
-    this.vendorService.update(vendor).subscribe({
+    this.newvendorService.update(vendor).subscribe({
       // Create observer object
-      next: (emp: Vendor) => (this.msg = `Vendor ${emp.id} updated!`),
+      next: (vndr: Vendor) => {
+        this.msg = `Vendor ${vndr.id} updated!`;
+      },
       error: (err: Error) => (this.msg = `Update failed! - ${err.message}`),
       complete: () => (this.hideEditForm = !this.hideEditForm),
     });
   } // update
+
+  /**
+  * getAll - retrieve everything
+  */
+  getAll(passedMsg: string = ''): void {
+    this.newvendorService.getAll().subscribe({
+      // Create observer object
+      next: (vndrs: Vendor[]) => {
+        this.vendors = vndrs;
+      },
+      error: (err: Error) =>
+        (this.msg = `Couldn't get vendors - ${err.message}`),
+      complete: () =>
+        passedMsg ? (this.msg = passedMsg) : (this.msg = `Vendors loaded!`),
+    });
+  } // getAll
 
   /**
   * save - determine whether we're doing and add or an update
@@ -76,14 +93,14 @@ export class VendorHomeComponent implements OnInit {
   */
   add(vendor: Vendor): void {
     vendor.id = 0;
-    this.vendorService.add(vendor).subscribe({
+    this.newvendorService.create(vendor).subscribe({
       // Create observer object
-      next: (emp: Vendor) => {
-        this.msg = `Vendor ${emp.id} added!`;
+      next: (vndr: Vendor) => {
+        this.getAll(`Vendor ${vndr.id} added!`);
       },
       error: (err: Error) =>
         (this.msg = `Vendor not added! - ${err.message}`),
-      complete: () => (this.hideEditForm = !this.hideEditForm),
+      complete: () => (this.hideEditForm = !this.hideEditForm), // this calls unsubscribe
     });
   } // add
 
@@ -91,12 +108,14 @@ export class VendorHomeComponent implements OnInit {
   * delete - send vendor id to service for deletion
   */
   delete(vendor: Vendor): void {
-    this.vendorService.delete(vendor.id).subscribe({
+    this.newvendorService.delete(vendor.id).subscribe({
       // Create observer object
       next: (numOfVendorsDeleted: number) => {
+        let msg: string = '';
         numOfVendorsDeleted === 1
-          ? (this.msg = `Vendor ${vendor.name} deleted!`)
-          : (this.msg = `vendor not deleted`);
+          ? (msg = `Vendor ${vendor.name} deleted!`)
+          : (msg = `Vendor ${vendor.name} not deleted!`);
+        this.getAll(msg);
       },
       error: (err: Error) => (this.msg = `Delete failed! - ${err.message}`),
       complete: () => (this.hideEditForm = !this.hideEditForm),

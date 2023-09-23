@@ -3,8 +3,11 @@ import {
   FormControl,
   FormGroup,
   FormBuilder,
+  Validators
 } from '@angular/forms';
-import { Vendor } from '../vendor';
+import { Vendor } from '@app/vendor/vendor';
+import { ValidatePhone } from '@app/validators/phoneno.validator';
+import { ValidatePostal } from '@app/validators/postalcode.validator';
 
 @Component({
   selector: 'app-vendor-detail',
@@ -28,6 +31,7 @@ export class VendorDetailComponent implements OnInit {
   @Output() cancelled = new EventEmitter();
   @Output() deleted = new EventEmitter();
   @Output() saved = new EventEmitter();
+
   vendorForm: FormGroup;
   name: FormControl;
   address1: FormControl;
@@ -37,15 +41,16 @@ export class VendorDetailComponent implements OnInit {
   phone: FormControl;
   type: FormControl;
   email: FormControl;
+
   constructor(private builder: FormBuilder) {
-    this.name = new FormControl('');
-    this.address1 = new FormControl('');
-    this.city = new FormControl('');
-    this.province = new FormControl('');
-    this.postalcode = new FormControl('');
-    this.phone = new FormControl('');
-    this.type = new FormControl('');
-    this.email = new FormControl('');
+    this.name = new FormControl('', Validators.compose([Validators.required]));
+    this.address1 = new FormControl('', Validators.compose([Validators.required]));
+    this.city = new FormControl('', Validators.compose([Validators.required]));
+    this.province = new FormControl('', Validators.compose([Validators.required]));
+    this.postalcode = new FormControl('', Validators.compose([Validators.required, ValidatePostal]));
+    this.phone = new FormControl('', Validators.compose([Validators.required, ValidatePhone]));
+    this.type = new FormControl('', Validators.compose([Validators.required]));
+    this.email = new FormControl('', Validators.compose([Validators.required, Validators.email]));
 
     this.vendorForm = new FormGroup({
       name: this.name,
