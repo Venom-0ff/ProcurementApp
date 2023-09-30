@@ -108,7 +108,7 @@ export class VendorHomeComponent implements OnInit {
   * delete - send vendor id to service for deletion
   */
   delete(vendor: Vendor): void {
-    this.newvendorService.delete(vendor.id).subscribe({
+    this.newvendorService.delete(vendor).subscribe({
       // Create observer object
       next: (numOfVendorsDeleted: number) => {
         let msg: string = '';
