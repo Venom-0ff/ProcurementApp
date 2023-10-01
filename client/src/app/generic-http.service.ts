@@ -20,7 +20,7 @@ export class GenericHttpService<T> {
       .pipe(take(1), catchError(this.handleError));
   }
 
-  getById(id: number): Observable<T> {
+  getById(id: T): Observable<T> {
     const urlWithId = `${BASEURL}/${this.entity}}/${id}`;
     return this.http
       .get<T>(urlWithId)
@@ -40,7 +40,7 @@ export class GenericHttpService<T> {
       .pipe(take(1), catchError(this.handleError));
   }
 
-  delete(id: number): Observable<number> {
+  delete(id: any): Observable<number> {
     const urlWithId = `${BASEURL}/${this.entity}/${id}`;
     return this.http
       .delete<number>(urlWithId)
