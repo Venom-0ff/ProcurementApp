@@ -20,7 +20,7 @@ public class Product {
     private int rop; // Reorder Point, when stock falls to this # we re-order the item
     private int eoq; // Economic Order Quantity
     private int qoh; // Quantity on Hand, what we have in inventory
-    private int qoo; // – Quantity on Order, what we have ordered but haven't received yet
+    private int qoo; // Quantity on Order, what we have ordered but haven't received yet
 
     private String qrcode;
     private String qrcodetxt;

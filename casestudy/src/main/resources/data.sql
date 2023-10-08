@@ -38,7 +38,7 @@ INSERT INTO Product (Id, VendorId, Name, CostPrice, MSRP, ROP, EOQ, QOH, QOO)
 INSERT INTO Product (Id, VendorId, Name, CostPrice, MSRP, ROP, EOQ, QOH, QOO)
  VALUES ('79P-O3V43', 4, 'Product N', 293.98, 1062.41, 98.55, 72.51, 824.42, 824.21);
 INSERT INTO Product (Id, VendorId, Name, CostPrice, MSRP, ROP, EOQ, QOH, QOO)
- VALUES ('75S-N1J12', 2, 'Product O', 1243.05, 1487.44, 77.63, 138.25, 29.9, 276.37);
+ VALUES ('75S-N1J12', 4, 'Product O', 1243.05, 1487.44, 77.63, 138.25, 29.9, 276.37);
 INSERT INTO Product (Id, VendorId, Name, CostPrice, MSRP, ROP, EOQ, QOH, QOO)
  VALUES ('73S-Q7R63', 3, 'Product P', 132.4, 165.21, 65.69, 784.28, 755.6, 788.06);
 INSERT INTO Product (Id, VendorId, Name, CostPrice, MSRP, ROP, EOQ, QOH, QOO)

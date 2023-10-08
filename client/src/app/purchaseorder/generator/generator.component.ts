@@ -15,6 +15,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { PDFURL } from '@app/constants';
 
 @Component({
   selector: 'app-generator',
@@ -284,4 +285,11 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       },
     });
   } // createPurchaseOrder
+
+  /**
+  * viewPdf - view po in pdf format
+  */
+  viewPdf(): void {
+    window.open(`${PDFURL}${this.purchaseorderno}`, '');
+  } // viewPdf
 } // GeneratorComponent
