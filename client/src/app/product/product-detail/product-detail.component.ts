@@ -11,6 +11,8 @@ import { Product } from '@app/product/product';
 import { Vendor } from '@app/vendor/vendor';
 import { CommonModule } from '@angular/common';
 import { ProductHomeComponent } from '../product-home/product-home.component';
+import { DeleteDialogComponent } from '@app/delete-dialog/delete-dialog.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ProductService } from '../product.service';
 
 @Component({
@@ -53,11 +55,11 @@ export class ProductDetailComponent implements OnInit {
   qoh: FormControl;
   qoo: FormControl;
 
-  constructor(private builder: FormBuilder, public productService: ProductService) {
+  constructor(private builder: FormBuilder, private dialog: MatDialog, public productService: ProductService) {
     this.id = new FormControl(
       '',
       Validators.compose([this.uniqueCodeValidator.bind(this), Validators.required])
-      );
+    );
     this.vendorid = new FormControl(
       '',
       Validators.compose([Validators.required])
@@ -166,4 +168,22 @@ export class ProductDetailComponent implements OnInit {
     }
     return null; // if we make it here there are no product codes
   } // uniqueCodeValidator
+
+
+  openDeleteDialog(selectedProduct: Product): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = false;
+    dialogConfig.data = {
+      title: `Delete Product ${this.selectedProduct.id}`,
+      entityname: 'product'
+    };
+    dialogConfig.panelClass = 'customdialog';
+    const dialogRef = this.dialog.open(DeleteDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleted.emit(this.selectedProduct);
+      }
+    });
+  } // openDeleteDialog
 } // ProductDetailComponent

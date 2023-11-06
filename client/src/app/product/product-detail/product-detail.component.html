@@ -51,7 +51,8 @@
                     <input matInput placeholder="Retail Price" type="text" formControlName="msrp" />
                     <mat-error *ngIf="msrp.errors && (msrp.dirty || msrp.touched)" align="end">
                         <span *ngIf="msrp.hasError('required')">Retail Price is required</span>
-                        <span *ngIf="!msrp.hasError('required') && msrp.hasError('pattern')">Retail Price should be 2 decimal points max</span>
+                        <span *ngIf="!msrp.hasError('required') && msrp.hasError('pattern')">Retail Price should be 2
+                            decimal points max</span>
                     </mat-error>
                 </mat-form-field>
             </div>
@@ -62,7 +63,8 @@
                     <input matInput placeholder="Cost Price" type="text" formControlName="costprice" />
                     <mat-error *ngIf="costprice.errors && (costprice.dirty || costprice.touched)" align="end">
                         <span *ngIf="costprice.hasError('required')">Cost Price is required</span>
-                        <span *ngIf="!costprice.hasError('required') && costprice.hasError('pattern')">Cost Price should be 2 decimal points max</span>
+                        <span *ngIf="!costprice.hasError('required') && costprice.hasError('pattern')">Cost Price should
+                            be 2 decimal points max</span>
                     </mat-error>
                 </mat-form-field>
             </div>
@@ -80,7 +82,8 @@
                     <input matInput placeholder="Reorder Point" type="text" formControlName="rop" />
                     <mat-error *ngIf="rop.errors && (rop.dirty || rop.touched)" align="end">
                         <span *ngIf="rop.hasError('required')">Reorder Point is required</span>
-                        <span *ngIf="!rop.hasError('required') && rop.hasError('pattern')">Reorder Point should be integer</span>
+                        <span *ngIf="!rop.hasError('required') && rop.hasError('pattern')">Reorder Point should be
+                            integer</span>
                     </mat-error>
                 </mat-form-field>
             </div>
@@ -91,7 +94,8 @@
                     <input matInput placeholder="Economic Order Quantity" type="text" formControlName="eoq" />
                     <mat-error *ngIf="eoq.errors && (eoq.dirty || eoq.touched)" align="end">
                         <span *ngIf="eoq.hasError('required')">Economic Order Quantity is required</span>
-                        <span *ngIf="!eoq.hasError('required') && eoq.hasError('pattern')">Economic Order Quantity should be integer</span>
+                        <span *ngIf="!eoq.hasError('required') && eoq.hasError('pattern')">Economic Order Quantity
+                            should be integer</span>
                     </mat-error>
                 </mat-form-field>
             </div>
@@ -102,7 +106,8 @@
                     <input matInput placeholder="Quantity On Hand" type="text" formControlName="qoh" />
                     <mat-error *ngIf="qoh.errors && (qoh.dirty || qoh.touched)" align="end">
                         <span *ngIf="qoh.hasError('required')">Quantity On Hand is required</span>
-                        <span *ngIf="!qoh.hasError('required') && qoh.hasError('pattern')">Quantity On Hand should be integer</span>
+                        <span *ngIf="!qoh.hasError('required') && qoh.hasError('pattern')">Quantity On Hand should be
+                            integer</span>
                     </mat-error>
                 </mat-form-field>
             </div>
@@ -113,7 +118,8 @@
                     <input matInput placeholder="Quantity On Order" type="text" formControlName="qoo" />
                     <mat-error *ngIf="qoo.errors && (qoo.dirty || qoo.touched)" align="end">
                         <span *ngIf="qoo.hasError('required')">Quantity On Order is required</span>
-                        <span *ngIf="!qoo.hasError('required') && qoo.hasError('pattern')">Quantity On Order should be integer</span>
+                        <span *ngIf="!qoo.hasError('required') && qoo.hasError('pattern')">Quantity On Order should be
+                            integer</span>
                     </mat-error>
                 </mat-form-field>
             </div>
@@ -128,9 +134,8 @@
             </button>
         </span>
         <span>
-            <button *ngIf="selectedProduct.id" mat-raised-button type="button" (click)="deleted.emit(selectedProduct)">
-                Delete
-            </button>
+            <button *ngIf="selectedProduct.id" mat-raised-button type="button"
+                (click)="openDeleteDialog(selectedProduct)">Delete</button>
         </span>
         <span>
             <button mat-raised-button type="button" (click)="cancelled.emit(selectedProduct)">

@@ -46,3 +46,18 @@ mat-form-field {
     background-color: darkgray;
     text-align: center;
 }
+
+#deleteNo,
+#deleteYes {
+    font-size: x-large;
+    padding: 1vh;
+    margin: 1vw;
+}
+
+#deleteCancel {
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding-top: 2vh;
+    padding-left: 5vw;
+}
