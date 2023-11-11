@@ -38,6 +38,8 @@ export class ProductHomeComponent implements OnInit {
       eoq: 0,
       qoh: 0,
       qoo: 0,
+      qrcode: [],
+      qrcodetxt: '',
     }
   }
 
@@ -171,6 +173,8 @@ export class ProductHomeComponent implements OnInit {
       eoq: 0,
       qoh: 0,
       qoo: 0,
+      qrcode: [],
+      qrcodetxt: '',
     };
     this.msg = 'New product';
     this.hideEditForm = !this.hideEditForm;

@@ -35,6 +35,8 @@ export class ProductDetailComponent implements OnInit {
     eoq: 0,
     qoh: 0,
     qoo: 0,
+    qrcode: [],
+    qrcodetxt: '',
   };
 
   @Input() vendors: Vendor[] | null = null;
@@ -54,6 +56,7 @@ export class ProductDetailComponent implements OnInit {
   eoq: FormControl;
   qoh: FormControl;
   qoo: FormControl;
+  qrcodetxt: FormControl;
 
   constructor(private builder: FormBuilder, private dialog: MatDialog, public productService: ProductService) {
     this.id = new FormControl(
@@ -92,6 +95,10 @@ export class ProductDetailComponent implements OnInit {
       '',
       Validators.compose([Validators.required, Validators.pattern(/^\d+$/)])
     );
+    this.qrcodetxt = new FormControl(
+      '',
+      Validators.compose([Validators.required])
+    );
 
     this.productForm = this.builder.group({
       id: this.id,
@@ -103,6 +110,7 @@ export class ProductDetailComponent implements OnInit {
       eoq: this.eoq,
       qoh: this.qoh,
       qoo: this.qoo,
+      qrcodetxt: this.qrcodetxt,
     });
   } // constructor
 
@@ -119,6 +127,7 @@ export class ProductDetailComponent implements OnInit {
       eoq: this.selectedProduct.eoq,
       qoh: this.selectedProduct.qoh,
       qoo: this.selectedProduct.qoo,
+      qrcodetxt: this.selectedProduct.qrcodetxt,
     });
   } // ngOnInit
 
@@ -149,6 +158,7 @@ export class ProductDetailComponent implements OnInit {
     this.selectedProduct.eoq = this.productForm.value.eoq;
     this.selectedProduct.qoh = this.productForm.value.qoh;
     this.selectedProduct.qoo = this.productForm.value.qoo;
+    this.selectedProduct.qrcodetxt = this.productForm.value.qrcodetxt;
     this.saved.emit(this.selectedProduct);
   } // updateSelectedProduct
 

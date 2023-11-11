@@ -2,8 +2,10 @@ package com.info5059.casestudy.product;
 
 import java.math.BigDecimal;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,11 @@ public class Product {
     private int qoh; // Quantity on Hand, what we have in inventory
     private int qoo; // Quantity on Order, what we have ordered but haven't received yet
 
-    private String qrcode;
+    @Basic(optional = true)
+    @Lob
+    private byte[] qrcode;
+    @Basic(optional = true)
     private String qrcodetxt;
+    // private String qrcode;
+    // private String qrcodetxt;
 }

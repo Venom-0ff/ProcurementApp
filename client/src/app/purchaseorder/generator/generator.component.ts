@@ -84,6 +84,8 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       eoq: 0,
       qoh: 0,
       qoo: 0,
+      qrcode: [],
+      qrcodetxt: '',
     };
 
     this.selectedVendor = {
@@ -171,6 +173,8 @@ export class GeneratorComponent implements OnInit, OnDestroy {
           eoq: 0,
           qoh: 0,
           qoo: 0,
+          qrcode: [],
+          qrcodetxt: '',
         };
         this.selectedVendor = val;
         this.loadVendorProducts();
@@ -194,12 +198,12 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       ?.valueChanges.subscribe((val) => {
         this.selectedProduct = val;
         const index = this.items.findIndex((item) => item.productid === this.selectedProduct?.id)
-          if (index !== -1) {
-            this.selectqty.setValue(this.items[index].qty);
-          }
-          else {
-            this.selectqty.reset();
-          }
+        if (index !== -1) {
+          this.selectqty.setValue(this.items[index].qty);
+        }
+        else {
+          this.selectqty.reset();
+        }
         this.pickedProduct = true;
       });
     this.formSubscription?.add(productSubscription); // add it as a child, so all can be destroyed together

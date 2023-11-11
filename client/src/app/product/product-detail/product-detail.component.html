@@ -125,6 +125,28 @@
             </div>
             <br />
         </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header class="my-primary-text">
+                <mat-panel-title>
+                    QR Code Information
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div layout="row">
+                <mat-form-field flex>
+                    <mat-label>QR Code Source</mat-label>
+                    <input matInput placeholder="QR Code Source" type="text" formControlName="qrcodetxt" />
+                    <mat-error *ngIf="qrcodetxt.errors && (qrcodetxt.dirty || qrcodetxt.touched)" align="end">
+                        <p *ngIf="qrcodetxt.hasError('required')">QR Code Source is required</p>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <br />
+            <div layout="row" *ngIf="selectedProduct.qrcode != null;">
+                QR Code:
+                <br />
+                <img style="display:block;" [src]="'data:image/png;base64,' + selectedProduct.qrcode"/>
+            </div>
+        </mat-expansion-panel>
     </mat-accordion>
     <br />
     <div class="mat-pad-sm">

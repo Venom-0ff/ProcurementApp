@@ -37,7 +37,7 @@
     </mat-card-content>
     <ng-template #loading class="my-primary-text">Loading Products from server...</ng-template>
 </mat-card>
-<div class="padtop15">
+<div class="padtop15" *ngIf="hideEditForm">
     <mat-icon (click)="newProduct()" matTooltip="Add New Product" class="addicon" color="primary">
         control_point
     </mat-icon>
