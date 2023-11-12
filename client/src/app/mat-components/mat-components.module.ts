@@ -17,6 +17,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 
 const MaterialComponents = [
@@ -35,7 +36,8 @@ const MaterialComponents = [
   MatDatepickerModule,
   MatNativeDateModule,
   MatExpansionModule,
-  MatDialogModule
+  MatDialogModule,
+  MatPaginatorModule
 ];
 
 @NgModule({
