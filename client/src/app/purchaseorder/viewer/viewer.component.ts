@@ -18,17 +18,16 @@ import { Subscription } from 'rxjs';
 import { PDFURL } from '@app/constants';
 
 @Component({
-  selector: 'app-generator',
+  selector: 'app-viewer',
   standalone: true,
   imports: [CommonModule, MatComponentsModule, ReactiveFormsModule],
-  templateUrl: './generator.component.html',
+  templateUrl: './viewer.component.html',
 })
-
-export class GeneratorComponent implements OnInit, OnDestroy {
+export class ViewerComponent implements OnInit, OnDestroy {
   // form
-  generatorForm: FormGroup;
+  viewerForm: FormGroup;
   vendorid: FormControl;
-  productid: FormControl;
+  poid: FormControl;
   selectqty: FormControl;
 
   // data
@@ -39,6 +38,9 @@ export class GeneratorComponent implements OnInit, OnDestroy {
   items: PurchaseOrderLineitem[] = []; // product items that will be in purchaseorder
   selectedProduct: Product; // the current selected product
   selectedVendor: Vendor; // the current selected vendor
+  selectedPO: PurchaseOrder;
+  poProducts: Product[] = [];
+  vendorPOs: PurchaseOrder[] = [];
   qty: number;
 
   // misc
@@ -64,11 +66,11 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     this.generated = false;
     this.msg = '';
     this.vendorid = new FormControl('');
-    this.productid = new FormControl('');
+    this.poid = new FormControl('');
     this.selectqty = new FormControl('');
 
-    this.generatorForm = this.builder.group({
-      productid: this.productid,
+    this.viewerForm = this.builder.group({
+      poid: this.poid,
       vendorid: this.vendorid,
       selectqty: this.selectqty
     });
@@ -99,6 +101,14 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       email: '',
     };
 
+    this.selectedPO = {
+      id: 0,
+      vendorid: 0,
+      amount: 0.0,
+      items: [],
+      podate: '',
+    };
+
     this.hasProducts = false;
     this.qty = 0;
     this.sub = 0.0;
@@ -110,8 +120,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.onPickVendor(); // sets up subscription for dropdown click
-    this.onPickProduct(); // sets up subscription for dropdown click
-    this.onPickQty();
+    this.onPickPO(); // sets up subscription for dropdown click
     this.msg = 'loading vendors from server...';
     this.getAllVendors();
   } // ngOnInit
@@ -141,7 +150,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
   /**
   * loadvendorProducts - retrieve a particular vendor's products
   */
-  loadvendorProducts(): void {
+  loadVendorProducts(): void {
     this.vendorProducts = [];
     this.productService.getSome(this.selectedVendor.id).subscribe({
       // observer object
@@ -155,11 +164,21 @@ export class GeneratorComponent implements OnInit, OnDestroy {
   } // loadvendorProducts
 
   /**
+  * loadvendorProducts - retrieve a particular vendor's products
+  */
+  loadVendorPOs(): void {
+    this.vendorPOs = [];
+    this.purchaseorderService
+      .getSome(this.selectedVendor.id)
+      .subscribe((pos) => this.vendorPOs = pos);
+  } // loadvendorProducts
+
+  /**
   * onPickVendor - Another way to use Observables, subscribe to the select change event
   * then load specific vendor products for subsequent selection
   */
   onPickVendor(): void {
-    this.formSubscription = this.generatorForm
+    this.formSubscription = this.viewerForm
       .get('vendorid')
       ?.valueChanges.subscribe((val) => {
         this.selectedProduct = {
@@ -176,10 +195,11 @@ export class GeneratorComponent implements OnInit, OnDestroy {
           qrcodetxt: '',
         };
         this.selectedVendor = val;
-        this.loadvendorProducts();
+        this.loadVendorProducts();
+        this.loadVendorPOs();
         this.pickedProduct = false;
         this.hasProducts = false;
-        this.msg = 'choose product for vendor';
+        this.msg = 'Choose PO for vendor';
         this.pickedVendor = true;
         this.generated = false;
         this.items = []; // array for the purchaseorder
@@ -187,106 +207,36 @@ export class GeneratorComponent implements OnInit, OnDestroy {
   } // onPickVendor
 
   /**
-  * onPickProduct - subscribe to the select change event then
+  * onPickPO - subscribe to the select change event then
   * update array containing items.
   */
-  onPickProduct(): void {
-    const productSubscription = this.generatorForm
-      .get('productid')
+  onPickPO(): void {
+    const purchaseorderSubscription = this.viewerForm
+      .get('poid')
       ?.valueChanges.subscribe((val) => {
-        this.selectedProduct = val;
-        const index = this.items.findIndex((item) => item.productid === this.selectedProduct?.id)
-        if (index !== -1) {
-          this.selectqty.setValue(this.items[index].qty);
+        this.selectedPO = val;
+
+        if (this.vendorProducts !== undefined) {
+          this.poProducts = this.vendorProducts.filter((prod) =>
+            this.selectedPO?.items.some((item) => item.productid === prod.id)
+          );
         }
-        else {
-          this.selectqty.reset();
+
+        if (this.poProducts.length > 0) {
+          this.hasProducts = true
         }
-        this.pickedProduct = true;
-      });
-    this.formSubscription?.add(productSubscription); // add it as a child, so all can be destroyed together
-  } // onPickProduct
 
-  /**
-  * onPickQty - subscribe to the select change event then
-  * update array containing items.
-  */
-  onPickQty(): void {
-    const qtySubscription = this.generatorForm
-      .get('selectqty')
-      ?.valueChanges.subscribe((val) => {
-        if (val !== null) {
-          this.qty = val;
-          const item: PurchaseOrderLineitem = {
-            id: 0,
-            poid: 0,
-            qty: this.qty,
-            price: this.selectedProduct?.costprice,
-            productid: this.selectedProduct?.id,
-            productname: this.selectedProduct?.name
-          };
+        this.sub = 0.0;
+        this.poProducts.forEach((prod) => (this.sub += prod.costprice * prod.qoo));
+        this.tax = this.sub * 0.13;
+        this.total = this.sub + this.tax;
 
-          const index = this.items.findIndex((item) => item.productid === this.selectedProduct?.id)
-          if (index !== -1) {
-            if (item.qty > 0) {
-              // update entry
-              this.items[index] = item;
-            }
-            else {
-              // remove entry
-              this.items = this.items.filter(i => i !== this.items[index]);
-            }
-          }
-          else if (this.qty > 0) {
-            // add entry
-            this.items.push(item);
-          }
-
-          if (this.items.length > 0) {
-            this.hasProducts = true;
-          }
-          else {
-            this.hasProducts = false;
-          }
-
-          this.sub = 0.0;
-          this.items.forEach((item) => (this.sub += item.price * item.qty));
-          this.tax = this.sub * 0.13;
-          this.total = this.sub + this.tax;
-        }
-      });
-    this.formSubscription?.add(qtySubscription); // add it as a child, so all can be destroyed together
-  } // onPickQty
-
-  /**
-  * createPurchaseOrder - create the client side purchaseorder
-  */
-  createPurchaseOrder(): void {
-    this.generated = false;
-    const purchaseorder: PurchaseOrder = {
-      id: 0,
-      items: this.items,
-      amount: this.total,
-      vendorid: this.selectedProduct.vendorid,
-    };
-    this.purchaseorderService.create(purchaseorder).subscribe({
-      // observer object
-      next: (purchaseorder: PurchaseOrder) => {
-        // server should be returning purchaseorder with new id
-        purchaseorder.id > 0
-          ? (this.msg = `PurchaseOrder ${purchaseorder.id} added!`)
-          : (this.msg = 'PurchaseOrder not added! - server error');
-        this.purchaseorderno = purchaseorder.id;
-      },
-      error: (err: Error) => (this.msg = `PurchaseOrder not added! - ${err.message}`),
-      complete: () => {
-        this.hasProducts = false;
-        this.pickedVendor = false;
-        this.pickedProduct = false;
+        this.purchaseorderno = this.selectedPO.id;
         this.generated = true;
-      },
-    });
-  } // createPurchaseOrder
+        this.msg = `PO ${this.selectedPO.id} selected`;
+      });
+    this.formSubscription?.add(purchaseorderSubscription); // add it as a child, so all can be destroyed together
+  } // onPickPO
 
   /**
   * viewPdf - view po in pdf format
@@ -294,4 +244,4 @@ export class GeneratorComponent implements OnInit, OnDestroy {
   viewPdf(): void {
     window.open(`${PDFURL}${this.purchaseorderno}`, '');
   } // viewPdf
-} // GeneratorComponent
+} // ViewerComponent

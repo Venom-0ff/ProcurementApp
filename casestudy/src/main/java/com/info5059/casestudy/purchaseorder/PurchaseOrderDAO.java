@@ -9,7 +9,6 @@ import com.info5059.casestudy.product.Product;
 import com.info5059.casestudy.product.ProductRepository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
@@ -37,7 +36,7 @@ public class PurchaseOrderDAO {
             realItem.setPrice(item.getPrice());
             // we also need to update the QOO on the product table
             Product product = productRepository.getReferenceById(item.getProductid());
-            product.setQoo(/*product.getQoo() + */item.getQty());
+            product.setQoo(item.getQty());
             productRepository.saveAndFlush(product);
             entityManager.persist(realItem);
         }

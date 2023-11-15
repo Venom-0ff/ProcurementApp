@@ -23,4 +23,9 @@ public class PurchaseOrderController {
         Iterable<PurchaseOrder> pos = purchaseOrderRepository.findAll();
         return new ResponseEntity<Iterable<PurchaseOrder>>(pos, HttpStatus.OK);
     }
+
+    @GetMapping("/api/pos/{id}")
+    public ResponseEntity<Iterable<PurchaseOrder>> findByVendor(@PathVariable Long id) {
+        return new ResponseEntity<Iterable<PurchaseOrder>>(purchaseOrderRepository.findByVendorid(id), HttpStatus.OK);
+    }
 }

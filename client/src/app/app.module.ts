@@ -16,6 +16,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatComponentsModule } from './mat-components/mat-components.module';
 import { HomeComponent } from './home/home.component';
 import { VendorModule } from './vendor/vendor.module';
+import { ViewerComponent } from './purchaseorder/viewer/viewer.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { VendorModule } from './vendor/vendor.module';
     BrowserAnimationsModule,
     HttpClientModule,
     MatComponentsModule,
-    VendorModule
+    VendorModule,
+    ViewerComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -7,4 +7,5 @@ export interface PurchaseOrder {
     vendorid: number;
     amount: number;
     items: PurchaseOrderLineitem[];
+    podate?: string;
 }

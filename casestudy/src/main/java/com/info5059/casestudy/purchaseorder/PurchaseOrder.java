@@ -2,7 +2,6 @@ package com.info5059.casestudy.purchaseorder;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-// import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -27,10 +26,9 @@ public class PurchaseOrder {
     private Long vendorid; // FK
     private BigDecimal amount;
     
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
     private LocalDateTime podate;
 
-    // @OneToMany(mappedBy = "poid", cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany(targetEntity = PurchaseOrderLineitem.class, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "poid", referencedColumnName = "id")
     private List<PurchaseOrderLineitem> items = new ArrayList<PurchaseOrderLineitem>();

@@ -5,7 +5,7 @@
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <form [formGroup]="generatorForm" novalidate>
+        <form [formGroup]="viewerForm" novalidate>
             <div layout="row" style="margin-top: 3vh">
                 <mat-form-field flex>
                     <mat-label>Vendor</mat-label>
@@ -18,23 +18,10 @@
             </div>
             <div *ngIf="pickedVendor" layout="row">
                 <mat-form-field flex>
-                    <mat-label>Product</mat-label>
-                    <mat-select placeholder="Choose Product" formControlName="productid" (change)="onPickProduct()">
-                        <mat-option *ngFor="let product of vendorProducts" [value]="product">
-                            {{ product.name }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div *ngIf="pickedProduct" layout="row">
-                <mat-form-field flex>
-                    <mat-label>Select Qty</mat-label>
-                    <mat-select placeholder="Select Qty" formControlName="selectqty" (change)="onPickQty()">
-                        <mat-option [value]="selectedProduct.eoq">
-                            EOQ
-                        </mat-option>
-                        <mat-option *ngFor="let qty of qtyRange" [value]="qty">
-                            {{ qty }}
+                    <mat-label>PO</mat-label>
+                    <mat-select placeholder="Choose PO" formControlName="poid" (change)="onPickPO()">
+                        <mat-option *ngFor="let po of vendorPOs" [value]="po">
+                            {{ po.id + '. ' + (po.podate | date: 'short' : 'GMT-5') }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -43,9 +30,15 @@
             <div *ngIf="hasProducts" class="row">
                 <table>
                     <tr>
-                        <th colspan="3" class="pad-xs text-center md-subhead my-primary-text"
-                            style="font-weight: bold; padding: 1vh">
-                            Selected Products from {{ selectedVendor.name }}
+                        <th colspan="4" class="pad-xs text-center my-primary-text"
+                            style="font-weight: bold; padding: 2vh; font-size: x-large;">
+                            PO {{ selectedPO.id }}
+                            <div style="font-size: medium;">
+                                <br />
+                                Created on:
+                                <br />
+                                {{ selectedPO.podate | date: 'short' : 'GMT-5' }}
+                            </div>
                         </th>
                     </tr>
                     <tr style="font-weight: bold; background-color: grey">
@@ -56,46 +49,47 @@
                             Qty
                         </td>
                         <td style="text-align: center; width: 25vw; padding-top: 1vh; padding-bottom: 1vh;">
+                            Cost
+                        </td>
+                        <td style="text-align: center; width: 25vw; padding-top: 1vh; padding-bottom: 1vh;">
                             Extended
                         </td>
                     </tr>
-                    <tr *ngFor="let item of items">
+                    <tr *ngFor="let item of poProducts">
                         <td style="text-align: center; padding-top: 1vh; padding-bottom: 1vh">
-                            {{ item.productname }}
+                            {{ item.name }}
                         </td>
                         <td style="text-align: center; padding-top: 1vh; padding-bottom: 1vh">
-                            {{ item.qty }}
+                            {{ item.qoo }}
+                        </td>
+                        <td style="text-align: center; padding-top: 1vh; padding-bottom: 1vh">
+                            {{ item.costprice }}
                         </td>
                         <td style="text-align: center; padding-top: 1vh; padding-bottom: 1vh; text-align: right">
-                            {{ item.price * item.qty | currency : "USD" : "symbol" : "1.2-2" }}
+                            {{ item.costprice * item.qoo | currency : "USD" : "symbol" : "1.2-2" }}
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align: right">Sub:</td>
+                        <td colspan="3" style="text-align: right">Sub:</td>
                         <td class="my-accent-text" style="font-weight: 600; text-align: right">
                             {{ sub | currency : "USD" : "symbol" : "1.2-2" }}
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align: right">Tax:</td>
+                        <td colspan="3" style="text-align: right">Tax:</td>
                         <td class="my-accent-text" style="font-weight: 600; text-align: right">
                             {{ tax | currency : "USD" : "symbol" : "1.2-2" }}
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align: right">Total:</td>
+                        <td colspan="3" style="text-align: right">Total:</td>
                         <td class="my-accent-text" style="font-weight: 600; text-align: right">
                             {{ total | currency : "USD" : "symbol" : "1.2-2" }}
                         </td>
                     </tr>
                 </table>
             </div>
-            <div style="text-align: center" *ngIf="hasProducts">
-                <button mat-raised-button color="primary" (click)="createPurchaseOrder()" style="margin-top: 3vh">
-                    Save PO
-                </button>
-            </div>
-            <div style="text-align:center;" *ngIf="generated">
+            <div *ngIf="generated">
                 <button mat-raised-button type="submit" (click)="viewPdf()">View PDF</button>
             </div>
         </form>
