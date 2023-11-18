@@ -2,6 +2,7 @@ package com.info5059.casestudy.purchaseorder;
 
 import com.info5059.casestudy.product.Product;
 import com.info5059.casestudy.product.ProductRepository;
+import com.info5059.casestudy.product.QRCodeGenerator;
 import com.info5059.casestudy.vendor.Vendor;
 import com.info5059.casestudy.vendor.VendorRepository;
 import com.itextpdf.io.font.constants.StandardFonts;
@@ -45,7 +46,6 @@ public class PurchaseOrderPDFGenerator {
         public static ByteArrayInputStream generatePurchaseOrder(String poid,
                         PurchaseOrderRepository purchaseorderRepository, VendorRepository vendorRepository,
                         ProductRepository productRepository) throws IOException {
-
                 URL imageUrl = PurchaseOrderPDFGenerator.class.getResource("/static/images/SK Logo Transparent.png");
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -104,9 +104,10 @@ public class PurchaseOrderPDFGenerator {
                                                 .setTextAlignment(TextAlignment.CENTER);
                                 vendorTable.addCell(cell);
 
+                                Vendor vendor = null;
                                 Optional<Vendor> optv = vendorRepository.findById(purchaseorder.getVendorid());
                                 if (optv.isPresent()) {
-                                        Vendor vendor = optv.get();
+                                        vendor = optv.get();
 
                                         cell = new Cell().add(new Paragraph(vendor.getName())
                                                         .setFont(font)
@@ -293,14 +294,17 @@ public class PurchaseOrderPDFGenerator {
                                 table.addCell(cell);
 
                                 document.add(table);
-                        }
 
-                        document.add(new Paragraph("\n\n"));
-                        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
-                        document.add(new Paragraph(dateFormatter
-                                        .format(purchaseorder != null ? purchaseorder.getPodate()
-                                                        : LocalDateTime.now()))
-                                        .setTextAlignment(TextAlignment.CENTER));
+                                document.add(new Paragraph("\n\n"));
+                                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
+                                document.add(new Paragraph(
+                                                dateFormatter.format(purchaseorder != null ? purchaseorder.getPodate()
+                                                                : LocalDateTime.now()))
+                                                .setTextAlignment(TextAlignment.CENTER));
+
+                                Image qrcode = addSummaryQRCode(vendor, purchaseorder);
+                                document.add(qrcode);
+                        }
 
                         document.close();
                 } catch (Exception ex) {
@@ -309,5 +313,16 @@ public class PurchaseOrderPDFGenerator {
 
                 // finally send stream back to the controller
                 return new ByteArrayInputStream(baos.toByteArray());
+        }
+
+        private static Image addSummaryQRCode(Vendor vendor, PurchaseOrder purchaseorder) {
+                Locale locale = Locale.of("en", "US");
+                NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
+
+                String source = "Summary for Purchase Order: " + purchaseorder.getId() + "\nDate: " + dateFormatter.format(purchaseorder.getPodate()) + "\nVendor: " + vendor.getName() + "\nTotal: " + formatter.format(purchaseorder.getAmount());
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                byte[] qrcodebin = qrGenerator.generateQRCode(source);
+                return new Image(ImageDataFactory.create(qrcodebin)).scaleAbsolute(100, 100).setFixedPosition(460,60);
         }
 } // PurchaseOrderPDFGenerator
