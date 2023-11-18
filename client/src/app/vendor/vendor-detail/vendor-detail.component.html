@@ -14,7 +14,7 @@
             <mat-error *ngIf="email.errors && (email.dirty || email.touched)" align="end">
                 <span *ngIf="email.hasError('required')">Email is required</span>
                 <span *ngIf="!email.hasError('required') && email.hasError('email')">Invalid format -
-                    must be xx@xx.xx</span>
+                    must be xx&#64;xx.xx</span>
             </mat-error>
             <input matInput type="email" formControlName="email" />
         </mat-form-field>

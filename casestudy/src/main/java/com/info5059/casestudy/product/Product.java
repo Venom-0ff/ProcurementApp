@@ -29,6 +29,4 @@ public class Product {
     private byte[] qrcode;
     @Basic(optional = true)
     private String qrcodetxt;
-    // private String qrcode;
-    // private String qrcodetxt;
 }

@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Observer } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
 import { Vendor } from '../vendor';
 import { NewVendorService } from '../newvendor.service';
 

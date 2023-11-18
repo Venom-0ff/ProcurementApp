@@ -139,12 +139,7 @@ export class ProductDetailComponent implements OnInit {
       // Create observer object
       next: (products: Product[]) => {
         this.products = products;
-        // this.dataSource.data = this.products;
-      },
-      // error: (err: Error) =>
-      //   (this.msg = `Couldn't get products - ${err.message}`),
-      // complete: () =>
-      //   passedMsg ? (this.msg = passedMsg) : (this.msg = `Products loaded!`),
+      }
     });
   } // getAllProducts
 
